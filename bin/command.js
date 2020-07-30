@@ -9,9 +9,9 @@ const readJson = require('read-metadata');
 const path = require('path');
 const fs = require('fs');
 
-const templates = ['react-dev-template'];
+const templates = ['vue-admin-simple-tamplate'];
 
-const rewriterPackageJson = function(projectName, version = '0.0.1') {
+const rewriterPackageJson = function (projectName, version = '0.0.1') {
   const jsonPath = path.resolve(process.cwd(), `${projectName}/package.json`);
   console.log(jsonPath);
   let opts = readJson.sync(jsonPath);
@@ -22,7 +22,7 @@ const rewriterPackageJson = function(projectName, version = '0.0.1') {
 
 const pullProjectAndRewritePackage = (template, dir) => {
   spinner.start();
-  download(`Afu0402/${template}`, dir, function(error) {
+  download(`Afu0402/${template}`, dir, function (error) {
     if (error) {
       spinner.fail(error.message);
     } else {
@@ -47,11 +47,14 @@ const list = [
 program
   .version(require('../package.json').version)
   .command('create <name>')
-  .description('select project template and generate project')
-  .action(name => {
-    inqurer.prompt(list).then(answers => {
-      pullProjectAndRewritePackage(answers.template, name);
-    });
-  });
+  .option("-t, --template <template>", "the name of development")
+  // .description('select project template and generate project')
+  .action((name,option) => {
+    if (!option.template) {
+      console.log('请输入开发模板的名称')
+      return
+    }
+    pullProjectAndRewritePackage(option.template, name);
 
+  });
 program.parse(process.argv);
